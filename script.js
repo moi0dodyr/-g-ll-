@@ -1,2 +1,4 @@
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Analytics } from "@vercel/analytics/react"
+import { inject } from "@vercel/analytics"
+import { injectSpeedInsights } from '@vercel/speed-insights';
+inject();
+injectSpeedInsights();
