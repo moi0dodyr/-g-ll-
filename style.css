@@ -73,8 +73,28 @@ img {
     padding-bottom: 20px;
 }
 
+.preview-img {
+    filter: blur(1px);
+    transition: filter 0.3s ease;
+}
 
- /*.main-cont {
+.fullscreen-img {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    display: none;
+}
+
+.fullscreen-img.show {
+    display: block;
+}
+
+/*.main-cont {
     display:grid;
     grid-template-columns: repeat(4, 1fr); 
     grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
