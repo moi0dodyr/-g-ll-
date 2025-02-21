@@ -74,8 +74,8 @@ img {
 }
 
 .preview-img {
-    filter: blur(1px);
-    transition: filter 0.3s ease;
+    filter: blur(0px);
+    transition: filter 0s ease;
 }
 
 .fullscreen-img {

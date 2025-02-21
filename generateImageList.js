@@ -12,7 +12,7 @@ function getImages(dir) {
             results = results.concat(getImages(filePath));
         } else if (/\.(jpg|jpeg|png|gif)$/.test(file)) {
             const relativePath = filePath.replace(__dirname + path.sep, '').replace(/\\/g, '/');
-            results.push(`<div><img src="${relativePath}"/></div>`);
+            results.push(`<div><img class='preview-img' src='${relativePath}' data-full='${relativePath}'/></div>`);
         }
     });
     return results;
