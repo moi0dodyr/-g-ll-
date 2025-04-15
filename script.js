@@ -1,18 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const previewImages = document.querySelectorAll('.preview-img');
-    const fullscreenImg = document.getElementById('fullscreen-img');
     const gridContainer = document.querySelector('.my-grid');
+    const fullscreenImg = document.getElementById('fullscreen-img');
+    let imageSources = [];
+    let currentIndex = gridContainer.children.length;
+    const batchSize = 8;
 
-    // Array of image sources
-    const imageSources = Array.from({ length: 409 }, (_, i) => `src/${String(i + 1).padStart(4, '0')}.jpg`);
+    // Fetch image list from imageList.json
+    fetch('imageList.json')
+        .then(res => res.json())
+        .then(list => {
+            imageSources = list.map(html => {
+                // Extract src from the HTML string
+                const match = html.match(/src='([^']+)'/);
+                return match ? match[1] : null;
+            }).filter(Boolean);
 
-    // Track the current index of loaded images
-    let currentIndex = previewImages.length;
+            // Load initial batch if needed
+            loadMoreImages();
+        });
 
-    // Function to load more images
     function loadMoreImages() {
         const fragment = document.createDocumentFragment();
-        for (let i = 0; i < 20 && currentIndex < imageSources.length; i++) {
+        for (let i = 0; i < batchSize && currentIndex < imageSources.length; i++, currentIndex++) {
             const imgDiv = document.createElement('div');
             const img = document.createElement('img');
             img.className = 'preview-img';
@@ -20,12 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
             img.dataset.full = imageSources[currentIndex];
             imgDiv.appendChild(img);
             fragment.appendChild(imgDiv);
-            currentIndex++;
         }
         gridContainer.appendChild(fragment);
     }
 
-    // Scroll event listener
     window.addEventListener('scroll', () => {
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
         if (scrollTop + clientHeight >= scrollHeight - 100) {
@@ -33,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Fullscreen image logic
     gridContainer.addEventListener('click', (event) => {
         if (event.target.classList.contains('preview-img')) {
             fullscreenImg.src = event.target.dataset.full;
