@@ -64,16 +64,24 @@ button {
 }
 
 .my-grid {
-    column-count: 4;
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
     padding-left: 40px;
     padding-right: 40px;
-    column-gap: 20px;
+  
+}
+
+.my-grid > div {
+    position: absolute;
+    transition: top 0.3s, left 0.3s;
+    width: calc((100% - 60px) / 4); /* 4 columns, 20px gap between columns */
+    box-sizing: border-box;
 }
 
 img {
     max-width: 100%;
     display: block;
-    padding-bottom: 20px;
 }
 
 .preview-img {

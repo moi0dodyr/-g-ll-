@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fragment.appendChild(imgDiv);
         }
         gridContainer.appendChild(fragment);
+        relayoutOnImageLoad();
     }
 
     window.addEventListener('scroll', () => {
@@ -50,4 +51,57 @@ document.addEventListener('DOMContentLoaded', () => {
     fullscreenImg.addEventListener('click', () => {
         fullscreenImg.classList.remove('show');
     });
+
+    function layoutMasonry() {
+        const grid = document.querySelector('.my-grid');
+        const items = Array.from(grid.children);
+        const columnCount = 4;
+        const gap = 20;
+        const columnHeights = Array(columnCount).fill(0);
+
+        // Get the width of each column
+        const gridWidth = grid.clientWidth;
+        const colWidth = (gridWidth - gap * (columnCount - 1)) / columnCount;
+
+        items.forEach(item => {
+            item.style.width = colWidth + 'px';
+            item.style.position = 'absolute';
+
+            // Find the shortest column
+            const minCol = columnHeights.indexOf(Math.min(...columnHeights));
+            const x = (colWidth + gap) * minCol;
+            const y = columnHeights[minCol];
+
+            item.style.left = x + 'px';
+            item.style.top = y + 'px';
+
+            // Update the column height
+            columnHeights[minCol] += item.offsetHeight + gap;
+        });
+
+        // Set container height
+        grid.style.height = Math.max(...columnHeights) + 'px';
+    }
+
+    // Call layoutMasonry after images load
+    function relayoutOnImageLoad() {
+        const grid = document.querySelector('.my-grid');
+        const imgs = grid.querySelectorAll('img');
+        let loaded = 0;
+        imgs.forEach(img => {
+            if (img.complete) {
+                loaded++;
+            } else {
+                img.onload = img.onerror = () => {
+                    loaded++;
+                    if (loaded === imgs.length) layoutMasonry();
+                };
+            }
+        });
+        if (loaded === imgs.length) layoutMasonry();
+    }
+
+    // Call after adding images
+    relayoutOnImageLoad();
+    window.addEventListener('resize', layoutMasonry);
 });
