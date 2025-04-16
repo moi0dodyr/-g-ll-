@@ -57,11 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const items = Array.from(grid.children);
         const columnCount = 4;
         const gap = 20;
-        const columnHeights = Array(columnCount).fill(0);
 
-        // Get the width of each column
-        const gridWidth = grid.clientWidth;
+        // Get computed paddings
+        const style = window.getComputedStyle(grid);
+        const paddingLeft = parseInt(style.paddingLeft, 10);
+        const paddingRight = parseInt(style.paddingRight, 10);
+
+        // Calculate usable width for columns
+        const gridWidth = grid.clientWidth - paddingLeft - paddingRight;
         const colWidth = (gridWidth - gap * (columnCount - 1)) / columnCount;
+
+        const columnHeights = Array(columnCount).fill(0);
 
         items.forEach(item => {
             item.style.width = colWidth + 'px';
@@ -69,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Find the shortest column
             const minCol = columnHeights.indexOf(Math.min(...columnHeights));
-            const x = (colWidth + gap) * minCol;
+            const x = paddingLeft + (colWidth + gap) * minCol;
             const y = columnHeights[minCol];
 
             item.style.left = x + 'px';
